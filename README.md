@@ -43,7 +43,7 @@ The L2 scripts take the cleaned data and analyze/plot it. The scripts are named 
 
 ## Contributors: ##
 PI: Phoebe L. Zarnetske
-Collaborators: Emily Parker, Mark Hammond, Kara Dobson, Moriah Young
+Collaborators: Emily Parker, Kara Dobson, Moriah Young, Mark Hammond
 
 ## Contact: ##
 For inquiries about the scripts or data, please contact Emily Parker @ parkere5@oregonstate.edu
