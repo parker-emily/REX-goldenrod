@@ -13,8 +13,8 @@ rm(list=ls())
 library(tidyverse)
 
 # Set working directory
-L0dir <- setwd("/Users/emilyparker/Documents/R/Goldenrod Project 2022/L0")
-L1dir <- setwd("/Users/emilyparker/Documents/R/Goldenrod Project 2022/L1")
+L0dir <- setwd("C:/Users/Emily/Documents/R/Goldenrod Project/L0")
+L1dir <- setwd("C:/Users/Emily/Documents/R/Goldenrod Project/L1")
 
 # Read in data
 galls21 <- read.csv(file.path(L0dir, "T7_warmx_Soca_gall_mass_2021_L0.csv"))
@@ -50,7 +50,7 @@ galls22[,c('inflorescence_present',
            'gall_height',
            'distance_to_first_green_leaf',
            'notes',
-          'harvest_date')] <- list(NULL)
+           'harvest_date')] <- list(NULL)
 
 # Removing nongalled plants 2022
 galls22 <- galls22 %>%
