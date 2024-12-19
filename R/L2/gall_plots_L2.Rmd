@@ -1,0 +1,221 @@
+---
+title: "REX: Gall Plots"
+author: "Moriah Young, Kara Dobson"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: pdf_document
+---
+
+COLLABORATORS: Phoebe Zarnetske, Mark Hammond, Emily Parker, Kristin Wolford 
+DATA INPUT: Cleaned gall csv from the shared Google drive  
+DATA OUTPUT: Plots visualizing gall data - Rmd is located in the "R/T7_warmx_plant_traits" folder in the rex-analysis Git repository
+PROJECT: REX  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# Clear all existing data
+rm(list=ls())
+
+# Load packages
+library(Rmisc)
+library(tidyverse)
+
+# Set working directory from .Renviron
+dir <- Sys.getenv("DATA_DIR")
+list.files(dir)
+
+# Read in data
+galls <- read.csv(file.path(dir, "T7_warmx_plant_traits/L1/T7_warmx_galls_L1.csv"))
+
+# making it so that plant_height, gall_diameter, and gall_height are on the same row for the same plant
+# so each unique plant will have just one row ompared to two in the raw data.
+#galls2 <- galls %>% 
+#        select(-date) %>% 
+#        group_by(rep, footprint, treatment, plant_num, gall_present) %>% 
+#        summarise(across(everything(), na.omit)) %>% 
+#        distinct()
+
+galls3 <- galls %>% dplyr::select(rep, footprint, treatment, plant_num, gall_present, plant_height) %>% 
+  na.omit() # creating a data frame with just the plant_height variable (not gall_height or gall_diameter) and no  
+# NAs
+
+galls4 <- galls %>% dplyr::select(-plant_height) %>% 
+  na.omit() %>% # get rid of plant_height variable and NAs
+  full_join(galls3) # joining the two data sets together 
+
+# The cleaned dataset has data on the same plant that was collected on different dates. So some plants have two rows of data pertaining to it. We wanted it so that plant_height, gall_diameter, and gall_height are on the same row for the same plant. The steps above basically (1) made a dataframe with just plant height as a variable and (2) another data set without plant height as a variable and kept the plants that had data on gall diameter and height. Both of those steps got rid of any NAs. Finally, (3) the two dataframes are merged to create one dataframe. 
+
+galls5 <- galls4 %>% dplyr::select(-date) # get rid of date - we don't need this and some have NAs for this
+
+# create a dateframe that only contains galled plants
+gall_only <- galls5[!(galls5$gall_present == "no_gall"),]
+        
+# Emily only wants to look at the effects of warming on goldenrod & galls so get rid of "drought" and "warmed_drought"
+# gall_warmed <- galls2[!(galls2$treatment == "drought" | galls2$treatment == "warmed_drought"),]
+
+# Set ggplot2 plotting
+# This code for ggplot2 sets the theme to mostly black and white 
+# (Arial font, and large font, base size=24)
+theme_set(theme_bw(14))
+theme_update(axis.text.x = element_text(size = 16),
+             axis.text.y = element_text(size = 16),
+             axis.title = element_text(size=16,face="bold"))
+
+```
+
+
+Looking at Plant Height - Galls vs No Galls
+```{r}
+# Take subplot average of plant height
+plant_height <- galls5 %>%
+        group_by(rep, footprint, treatment, gall_present) %>%
+        dplyr::summarize(plant_height = mean(plant_height, na.rm = TRUE))
+
+# Boxplot
+png("height_treatment.png", units="in", width=7, height=6, res=300)
+ggplot(plant_height, aes(x = treatment, y = plant_height, fill = gall_present)) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Treatment", y = "Plant Height (cm)", fill = "Gall Presence") +
+        scale_fill_manual(values = c("olivedrab", "olivedrab2"), labels = c("Gall", "No Gall")) +
+    theme(legend.text = element_text(size=16),
+        legend.title = element_text(size=16),
+        legend.position = c(.85,.85)) +
+        scale_x_discrete(limits = c("irr_control", "ambient", "drought", "warmed", "warmed_drought"),
+                         labels=c("ambient" = "Ambient",
+                                  "drought" = "Drought",
+                                  "irr_control" = "Irrigated \n Control",
+                                  "warmed" = "Warmed",
+                                  "warmed_drought" = "Warmed & \n Drought"),
+                         guide = guide_axis(n.dodge=2))
+        #geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+dev.off()
+
+# Gall average plot
+png("heights.png", units="in", width=6, height=5, res=300)
+ggplot(plant_height, aes(x = gall_present, y = plant_height, fill = gall_present)) +
+        geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+        scale_color_manual(values = c("gall" = "olivedrab", "no_gall" = "olivedrab3")) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Gall Presence", y = "Plant Height (cm)") +
+        scale_fill_manual(values = c("olivedrab", "olivedrab2")) +
+        scale_x_discrete(labels=c("gall" = "Gall",
+                                  "no_gall" = "No Gall")) +
+        theme(legend.position = "none")
+dev.off()
+
+# scatterplot version
+sum_gall <- summarySE(plant_height, measurevar="plant_height", groupvars="gall_present")
+png("heights.png", units="in", width=6, height=5, res=300)
+ggplot(plant_height, aes(x = gall_present, y = plant_height, fill = gall_present, shape = gall_present)) +
+        geom_jitter(shape=16, position=position_jitterdodge(), size = 3, aes(colour = gall_present)) +
+        scale_color_manual(values = c("gall" = "olivedrab", "no_gall" = "olivedrab3")) +
+        geom_crossbar(data=sum_gall, aes(x=gall_present,ymin=plant_height, ymax=plant_height, y=plant_height, group=gall_present), width = 0.5)+
+        #geom_point(color = "black", outlier.shape = NA) +
+        labs(x = "Gall Presence", y = "Plant Height (cm)") +
+        scale_fill_manual(values = c("olivedrab", "olivedrab2")) +
+        scale_x_discrete(labels=c("gall" = "Gall",
+                                  "no_gall" = "No Gall")) +
+        theme(legend.position = "none")
+dev.off()
+```
+
+Looking at Gall Diameter
+```{r}
+# Take subplot average of gall diameter
+gall_diameter <- gall_only %>%
+        group_by(rep, footprint, treatment, gall_present) %>%
+        summarize(gall_diameter = mean(gall_diameter, na.rm = TRUE))
+
+# Boxplot
+ggplot(gall_diameter, aes(x = treatment, y = gall_diameter, fill = gall_present)) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Treatment", y = "Gall Diameter (cm)", fill = "Gall Presence") +
+        scale_fill_manual(values = c("olivedrab"), labels = c("Gall")) +
+        scale_x_discrete(limits = c("irr_control", "ambient", "drought", "warmed", "warmed_drought"),
+                         labels=c("ambient" = "Ambient",
+                                  "drought" = "Drought",
+                                  "irr_control" = "Irrigated Control",
+                                  "warmed" = "Warmed",
+                                  "warmed_drought" = "Warmed & Drought"),
+                         guide = guide_axis(n.dodge=2)) +
+        #geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+        theme_classic() +
+  theme(legend.position = "none")
+
+# Gall average plot
+# don't need this one
+ggplot(gall_diameter, aes(x = gall_present, y = gall_diameter, fill = gall_present)) +
+        geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+        scale_color_manual(values = c("gall" = "olivedrab", "no_gall" = "darkgoldenrod1")) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Gall Presence", y = "Gall Diameter (cm)") +
+        scale_fill_manual(values = c("olivedrab", "darkgoldenrod1")) +
+        scale_x_discrete(labels=c("gall" = "Gall")) +
+        theme_classic() +
+        theme(legend.position = "none")
+
+```
+
+Looking at Gall Height
+```{r}
+# Take subplot average of gall height
+gall_height <- gall_only %>%
+        group_by(rep, footprint, treatment, gall_present) %>%
+        summarize(gall_height= mean(gall_height, na.rm = TRUE))
+
+# Boxplot of gall height by treatment
+ggplot(gall_height, aes(x = treatment, y = gall_height, fill = gall_present)) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Treatment", y = "Gall Height (cm)", fill = "Gall Presence") +
+        scale_fill_manual(values = c("olivedrab"), labels = c("Gall")) +
+        scale_x_discrete(limits = c("irr_control", "ambient", "drought", "warmed", "warmed_drought"),
+                         labels=c("ambient" = "Control",
+                                  "drought" = "Drought",
+                                  "irr_control" = "Irrigated Control",
+                                  "warmed" = "Warmed",
+                                  "warmed_drought" = "Warmed & Drought"),
+                         guide = guide_axis(n.dodge=2)) +
+        #geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+        theme_classic() +
+  theme(legend.position = "none")
+
+# Gall average plot
+# don't need this one
+ggplot(gall_height, aes(x = gall_present, y = gall_height, fill = gall_present)) +
+        geom_jitter(shape=16, position=position_jitterdodge(), alpha = 0.6, aes(colour = gall_present)) +
+        scale_color_manual(values = c("gall" = "olivedrab")) +
+        geom_boxplot(color = "black", outlier.shape = NA) +
+        labs(x = "Gall Presence", y = "Gall Height") +
+        scale_fill_manual(values = c("olivedrab", "darkgoldenrod1")) +
+        scale_x_discrete(labels=c("gall" = "Gall")) +
+        theme_classic() +
+        theme(legend.position = "none")
+
+```
+
+Height x Gall diamater or gall height
+```{r}
+lm_gall <- lm(gall_diameter ~ plant_height, data = gall_only)
+plot(gall_diameter ~ plant_height, data = gall_only) + 
+abline(lm_gall)
+summary(lm_gall)
+
+# ggplot version
+ggplot(gall_only,aes(plant_height, gall_diameter)) +
+  geom_point(color='olivedrab') + 
+  geom_smooth(method='lm', color="olivedrab") +
+  labs(x = "Plant Height (cm)", y = "Gall Diameter (cm)")
+
+lm_gall2 <- lm(gall_height ~ plant_height, data = gall_only)
+plot(gall_height ~ plant_height, data = gall_only) + 
+abline(lm_gall2)
+summary(lm_gall2)
+
+# ggplot version
+ggplot(gall_only,aes(plant_height, gall_height)) +
+  geom_point(color='olivedrab') + 
+  geom_smooth(method='lm', color="olivedrab") +
+  labs(x = "Plant Height (cm)", y = "Gall Height (cm)")
+```
