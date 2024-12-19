@@ -13,9 +13,8 @@ rm(list=ls())
 library(tidyverse)
 
 # Set working directory
-L0dir <- setwd("/Users/emilyparker/Documents/R/Goldenrod Project 2022/L0")
-L1dir <- setwd("/Users/emilyparker/Documents/R/Goldenrod Project 2022/L1")
-
+L0dir <- setwd("/Users/Emily/Documents/R/Goldenrod Project/L0")
+L1dir <- setwd("/Users/Emily/Documents/R/Goldenrod Project/L1")
 
 # Read in data
 height21 <- read.csv(file.path(L0dir, "T7_warmx_Soca_plant_height_postdrought_2021_L0.csv"))
