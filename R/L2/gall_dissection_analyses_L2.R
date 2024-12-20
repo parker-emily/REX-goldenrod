@@ -4,7 +4,7 @@
 # DATA INPUT:     Data imported as csv files from shared REX Google drive T7_warmx_insect L1 folder
 # DATA OUTPUT:    analyses
 # PROJECT:        REX
-# DATE:           Jan 2022; updated June 2024 with gall weight
+# DATE:           Jan 2022
 
 # Clear all existing data
 rm(list=ls())
@@ -26,7 +26,6 @@ dir<-Sys.getenv("DATA_DIR")
 # Read in data
 count <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
 vol <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
-weight <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_galls_weight_L1.csv"))
 
 
 ######## Gall chamber counts ########
