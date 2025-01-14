@@ -179,4 +179,42 @@ kable(result3) %>% kableExtra::kable_styling() # table
 kable(anova(m1), digits = 3) %>% kableExtra::kable_styling()
 ```
 
+plot with EMMs
+```{r}
+m1 <- lmer(sqrt(Biomass) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = biomass, REML=F)
+# Extract back-transformed EMMs
+emm <- emmeans(m1, ~ Climate_Treatment * Galling_Status, type = "response")
+emm_df <- as.data.frame(emm)
+
+biomass_plot <- ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, fill = Galling_Status)) +
+        geom_violin() +
+        geom_jitter(alpha = 0.7) +
+        labs(x = NULL, y = "Stem biomass (g)", title=NULL) +
+        scale_x_discrete(labels=c("ambient" = "Ambient", "warmed" = "Warmed")) +
+        scale_fill_manual(name="Galling Status",
+                    values = c("purple4", "plum2"))
+biomass_plot
+
+# violin plot for raw data plus estimated marginal means
+biomass_plot2 <- biomass_plot +
+    geom_point(data = emm_df, 
+               aes(x = Climate_Treatment, y = response), 
+               shape = 21, size = 3, color = "white", position = position_dodge(width = 0.9)) +
+    geom_errorbar(data = emm_df, 
+                  aes(x = Climate_Treatment, y = response, ymin = lower.CL, ymax = upper.CL, fill = Galling_Status), 
+                  width = 0.2, color = "white", position = position_dodge(width = 0.9))
+biomass_plot2
+
+# just EMMs plot
+eem_plot <- ggplot(emm_df, aes(x = Climate_Treatment, y = response, fill=Galling_Status)) +
+        geom_pointrange(aes(ymin = response - SE, ymax = response + SE),pch=21,size=1,position=position_dodge(0.3)) +
+        labs(x = NULL, y = "Stem biomass (g)", title=NULL) +
+        scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
+                   labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
+                            "Ambient Drought" = "Drought",
+                            "Warm Drought" = "Warmed &\nDrought")) +
+        scale_fill_manual(name="Galling Status",
+                    values = c("purple4", "plum2"))
+eem_plot
+```
 
