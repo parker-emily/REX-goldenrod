@@ -26,6 +26,8 @@ dir<-Sys.getenv("DATA_DIR")
 # Read in data
 height <- read.csv(file.path(dir, "/T7_warmx_plant_traits/L1/T7_warmx_soca_height_harvest_L1.csv"))
 
+# remove irrigated control treatement for analysis
+height <- height %>% filter(Climate_Treatment != "Irrigated Control")
 
 ###### Data exploration #######
 # The first thing we do is check the distribution of the raw data
@@ -70,7 +72,7 @@ plot(m1, main = "Plant height")
 # Homogeneity of variance looks a bit off (increasing variance in resids does increase with fitted values)
 # Check for homogeneity of variances (true if p>0.05). If the result is not significant, the assumption of equal variances (homoscedasticity) is met (no significant difference between the group variances).
 leveneTest(residuals(m1) ~ height$Climate_Treatment) # met
-leveneTest(residuals(m1) ~ height$Galling_Status) # met
+leveneTest(residuals(m1) ~ height$Galling_Status) # not met
 # (3) Normality of error term: need to check by histogram, QQplot of residuals, could do Kolmogorov-Smirnov test.
 # Check for normal residuals
 qqPlot(resid(m1), main = "Plant height")
@@ -89,10 +91,22 @@ anova(m2)
 kable(anova(m2)) %>% kableExtra::kable_styling()
 summary(m2)
 # back-transforming - W vs. A
-exp(4.43693)-exp(4.43693-0.23552) # warmed plants 17.7 cm taller than ambient
-# back-transforming - WD vs. A and WD vs. D (set the reference level to warm drought instead of warm)
-exp(4.47952)-exp(4.47952-0.27812) # warmed drought plants 21.4 cm taller than ambient
-exp(4.47952)-exp(4.47952-0.24918) # warmed drought plants 19.5 cm taller than drought
+exp(4.18646)-exp(4.18646-0.24415) # warmed plants 14.3 cm taller than ambient
 
+# back-transforming - galled vs. non-galled
+exp(4.18646)-exp(4.18646-0.10084) # non-galled plants 6.3 cm taller than galled
+
+# back-transforming - WD vs. A and WD vs. D (set the reference level to warm drought instead of warm)
+height <- within(height, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Warm Drought")) # re-set the reference level for diff. comparisons
+m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
+summary(m2)
+exp(4.48228)-exp(4.48228-(-0.29583)) # warmed drought plants 30.4 cm taller than ambient
+exp(4.48228)-exp(4.48228-(-0.27011)) # warmed drought plants 27.4 cm taller than drought
+
+# reset contrast
+height <- within(height, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Ambient")) # re-set the reference level for diff. comparisons
+m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
+
+# not edited - Moriah
 contrast(emmeans(m2, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
 (0.799 - 1) * 100 # 20% decrease from ambient to warmed
