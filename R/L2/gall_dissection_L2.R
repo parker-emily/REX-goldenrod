@@ -25,8 +25,11 @@ dir<-Sys.getenv("DATA_DIR")
 
 # Read in data
 count <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
+count <- count %>%
+  filter(!(treatment == "Irrigated Control"))
 vol <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
-
+vol <- vol %>%
+  filter(!(treatment == "Irrigated Control"))
 
 ######## Gall chamber counts ########
 # Data exploration
@@ -123,4 +126,40 @@ outlierTest(m1)
 summary(m1)
 anova(m1)
 
+
+
+######## Plotting ########
+# Taking averages
+count_avg <- count %>%
+  group_by(treatment) %>%
+  summarize(avg_count = mean(num_of_chambers, na.rm = TRUE),
+            se = std.error(num_of_chambers, na.rm = TRUE))
+vol_avg <- vol %>%
+  group_by(treatment) %>%
+  summarize(avg_vol = mean(chamber_volume_mm3, na.rm = TRUE),
+            se = std.error(chamber_volume_mm3, na.rm = TRUE))
+
+#pointrange - vol
+png("chmbr_vol_overall_point.png", units="in", width=9, height=6, res=300)
+ggplot(vol_avg, aes(x = treatment, y = avg_vol)) +
+  geom_pointrange(aes(ymin = avg_vol - se, ymax = avg_vol + se),pch=21,size=1,position=position_dodge(0.2), fill = "purple4") +
+  labs(x = NULL, y = "Chamber Volume (mm^3)", title=NULL) +
+  scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
+                   labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
+                            "Ambient Drought" = "Drought",
+                            "Warm Drought" = "Warmed\nDrought"))
+
+dev.off()
+
+#pointrange - count
+png("chmbr_count_overall_point.png", units="in", width=9, height=6, res=300)
+ggplot(count_avg, aes(x = treatment, y = avg_count)) +
+  geom_pointrange(aes(ymin = avg_count - se, ymax = avg_count + se),pch=21,size=1,position=position_dodge(0.2), fill = "purple4") +
+  labs(x = NULL, y = "Number of Larval Chambers", title=NULL) +
+  scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
+                   labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
+                            "Ambient Drought" = "Drought",
+                            "Warm Drought" = "Warmed\nDrought"))
+
+dev.off()
 
