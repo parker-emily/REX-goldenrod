@@ -83,6 +83,7 @@ summary(m1)
 emm <- emmeans(m1, ~ Climate_Treatment, type = "response")
 emm_df <- as.data.frame(emm)
 
+png("gall_mass.png", units="in", width=6, height=4, res=300)
 ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
   geom_jitter(alpha = 0.3, color = "purple4") +
   labs(x = NULL, y = "Dried gall biomass (g)", title=NULL) +
@@ -100,5 +101,5 @@ ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
   theme(axis.text.x = element_text(size = 12),
                axis.text.y = element_text(size = 16),
                axis.title = element_text(size=16,face="bold"))
-
+dev.off()
 
