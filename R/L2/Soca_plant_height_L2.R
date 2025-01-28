@@ -64,7 +64,7 @@ shapiro.test(resid(raw.data.test.log))
 # if there is 1. an effect of climate treatment on height, 2. an effect of galling status on height, and 3. does the effect
 # of climate on height depend on galling status. Subplot nested within footprint nested within rep is used as our random effect
 # to account for variation between plots. Year is also included as a random effect to account for variation between years.
-m1 <- lmer(log_height ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
+m1 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
 # Check Assumptions:
 # (1) Linearity: if covariates are not categorical
 # (2) Homogeneity: Need to Check by plotting residuals vs predicted values.
@@ -83,30 +83,75 @@ outlierTest(m1) # checking for outliers - none
 
 
 ###### Checking model results ########
-# this outcome shows us that climate has an effect but not galling. there is also no interaction btwn climate and galling
-height <- within(height, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Ambient")) # re-set the reference level for diff. comparisons
-m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
-emmip(m2, Climate_Treatment~Galling_Status)
-anova(m2)
-kable(anova(m2)) %>% kableExtra::kable_styling()
-summary(m2)
-# back-transforming - W vs. A
-exp(4.18646)-exp(4.18646-0.24415) # warmed plants 14.3 cm taller than ambient
+anova(m1) # Interactive effect between climate and galling
 
-# back-transforming - galled vs. non-galled
-exp(4.18646)-exp(4.18646-0.10084) # non-galled plants 6.3 cm taller than galled
+# Pairwise comparisons
+contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
 
-# back-transforming - WD vs. A and WD vs. D (set the reference level to warm drought instead of warm)
-height <- within(height, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Warm Drought")) # re-set the reference level for diff. comparisons
-m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
-summary(m2)
-exp(4.48228)-exp(4.48228-(-0.29583)) # warmed drought plants 30.4 cm taller than ambient
-exp(4.48228)-exp(4.48228-(-0.27011)) # warmed drought plants 27.4 cm taller than drought
 
-# reset contrast
-height <- within(height, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Ambient")) # re-set the reference level for diff. comparisons
-m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = height, REML=F)
 
-# not edited - Moriah
-contrast(emmeans(m2, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
-(0.799 - 1) * 100 # 20% decrease from ambient to warmed
+
+######## Height plotting ########
+# Extract back-transformed EMMs
+emm <- emmeans(m1, ~ Climate_Treatment*Galling_Status, type = "response")
+emm_df <- as.data.frame(emm)
+
+png("plant_height.png", units="in", width=6, height=4, res=300)
+ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, fill = Galling_Status)) +
+  geom_point(size=1, position=position_jitterdodge(), alpha=0.4) +
+  geom_errorbar(data = emm_df, 
+                aes(x = Climate_Treatment, y = response, ymin = response-SE, ymax = response+SE), 
+                width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
+  geom_point(data = emm_df, 
+             aes(x = Climate_Treatment, y = response), 
+             shape = 21, size = 3, color = "black", position = position_dodge(width = 0.9)) +
+  scale_fill_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
+  scale_color_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
+  labs(x = NULL, y = "Plant height (cm)", title=NULL) +
+  scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
+                   labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
+                            "Ambient Drought" = "Drought",
+                            "Warm Drought" = "Warmed &\nDrought")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_text(size=14,face="bold"),
+        legend.title = element_text(size=11,face="bold"),
+        legend.text = element_text(size=11))
+dev.off()
+
+
+
+
+
+######## Year plot for supp ########
+m2 <- lmer(log(Height_cm) ~ Climate_Treatment * Galling_Status + Year + (1|Rep/Footprint/Subplot), data = height, REML=F)
+# Extract back-transformed EMMs
+emm2 <- emmeans(m2, ~ Climate_Treatment*Galling_Status+Year, type = "response")
+emm_df2 <- as.data.frame(emm2)
+
+png("plant_height_year.png", units="in", width=10, height=6, res=300)
+ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, fill = Galling_Status)) +
+  facet_wrap(.~Year) +
+  geom_point(size=1, position=position_jitterdodge(), alpha=0.4) +
+  geom_errorbar(data = emm_df2, 
+                aes(x = Climate_Treatment, y = response, ymin = response-SE, ymax = response+SE), 
+                width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
+  geom_point(data = emm_df2, 
+             aes(x = Climate_Treatment, y = response), 
+             shape = 21, size = 3, color = "black", position = position_dodge(width = 0.9)) +
+  scale_fill_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
+  scale_color_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
+  labs(x = NULL, y = "Plant height (cm)", title=NULL) +
+  scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
+                   labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
+                            "Ambient Drought" = "Drought",
+                            "Warm Drought" = "Warmed &\nDrought")) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_text(size=14,face="bold"),
+        legend.title = element_text(size=11,face="bold"),
+        legend.text = element_text(size=11))
+dev.off()
+
