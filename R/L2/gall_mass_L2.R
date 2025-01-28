@@ -87,19 +87,19 @@ png("gall_mass.png", units="in", width=6, height=4, res=300)
 ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
   geom_jitter(alpha = 0.3, color = "purple4") +
   labs(x = NULL, y = "Dried gall biomass (g)", title=NULL) +
+  geom_errorbar(data = emm_df, 
+                aes(x = Climate_Treatment, y = response, ymin = response-SE, ymax = response+SE), 
+                width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
   geom_point(data = emm_df, 
              aes(x = Climate_Treatment, y = response), 
-             shape = 21, size = 3, fill = "purple4", position = position_dodge(width = 0.9)) +
-  geom_errorbar(data = emm_df, 
-                aes(x = Climate_Treatment, y = response, ymin = lower.CL, ymax = upper.CL), 
-                width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
+             shape = 21, size = 3, color = "black",fill = "purple4", position = position_dodge(width = 0.9)) +
   scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(size = 12),
-               axis.text.y = element_text(size = 16),
-               axis.title = element_text(size=16,face="bold"))
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+               axis.text.y = element_text(size = 14),
+               axis.title = element_text(size=14,face="bold"))
 dev.off()
 
