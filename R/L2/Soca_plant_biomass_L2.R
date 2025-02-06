@@ -115,9 +115,6 @@ summary(m1)
 # back-transforming - galled vs. non-galled
 (2.02736)^2-((2.02736-(-0.02615))^2) # -0.1067148 - non-galled plants weighed 0.11 g less than galled plants
 
-X=2
-((X+0.386)^2 - X^2)
-
 
 # contrasts for interaction - treatment * galling status
 contrast3 <- contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
