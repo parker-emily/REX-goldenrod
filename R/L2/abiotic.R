@@ -19,6 +19,7 @@ list.files(dir)
 library(tidyverse)
 library(plotrix)
 library(ggpubr)
+library(lmerTest)
 
 # Read in data
 hobo_data <- read.csv(file.path(dir, "sensors/OTC Footprints/L1/T7_warmx_HOBO_L1.csv"))
@@ -53,6 +54,7 @@ soil_season$hour <- format(soil_season$Date_Time, format="%H")
 soil_season$day <- format(soil_season$Date_Time, format="%d")
 soil_season$monthday <- format(soil_season$Date_Time, format="%m%d")
 soil_season$month_day <- format(soil_season$Date_Time, format="%m-%d")
+soil_season$year_month_day <- format(soil_season$Date_Time, format="%Y-%m-%d")
 soil_season_sum <- soil_season %>%
   filter(!(Subplot_Descriptions == "irrigated_control")) %>% # remove irrigated control
   filter(!(year == "2023" | year == "2024")) %>%
@@ -129,7 +131,7 @@ dr_check <- soil_drought_check %>%
 
 
 
-### figures ###
+### main figure ###
 ### plot - air temp, soil temp, and soil moisture averaged over both years
 level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
 level_order2 <- c("ambient", 'warmed', 'drought',"warmed_drought") 
@@ -189,6 +191,66 @@ dev.off()
 
 
 
+### stats ###
+# daily average
+daily_soil_moist <- soil_season_sum %>%
+  group_by(year_month_day,year,Subplot_Descriptions,Replicate) %>%
+  summarize(average_moist = mean(vwc, na.rm = TRUE))
+daily_soil_temp <- soil_season_sum %>%
+  group_by(year_month_day,year,Subplot_Descriptions,Replicate) %>%
+  summarize(average_temp = mean(temperature, na.rm = TRUE))
+daily_air_temp <- hobo_season_sum %>%
+  group_by(year_month_day,year,Treatment,Rep) %>%
+  summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
+# in the assumption checking, we're making sure that our full model meets the assumptions of the model.
+# the model below is the model structure we can use for all response variables; its testing to see
+# if there is 1. an effect of climate treatment on height, 2. an effect of galling status on height, and 3. does the effect
+# of climate on height depend on galling status. Subplot nested within footprint nested within rep is used as our random effect
+# to account for variation between plots. Year is also included as a random effect to account for variation between years.
+m1 <- lmer(average_moist ~ Subplot_Descriptions + (1|Replicate) + (1|year), data = daily_soil_moist, REML=F)
+m2 <- lmer(average_temp ~ Subplot_Descriptions + (1|Replicate) + (1|year), data = daily_soil_temp, REML=F)
+m3 <- lmer(average_temp ~ Treatment + (1|Rep) + (1|year), data = daily_air_temp, REML=F)
+# Check Assumptions:
+# (1) Linearity: if covariates are not categorical
+# (2) Homogeneity: Need to Check by plotting residuals vs predicted values.
+plot(m1)
+plot(m2)
+plot(m3)
+# Homogeneity of variance looks a bit off (increasing variance in resids does increase with fitted values)
+# Check for homogeneity of variances (true if p>0.05). If the result is not significant, the assumption of equal variances (homoscedasticity) is met (no significant difference between the group variances).
+leveneTest(residuals(m1) ~ daily_soil_moist$Subplot_Descriptions) # not met
+leveneTest(residuals(m2) ~ daily_soil_temp$Subplot_Descriptions) # met
+leveneTest(residuals(m3) ~ daily_air_temp$Treatment) # met
+# (3) Normality of error term: need to check by histogram, QQplot of residuals, could do Kolmogorov-Smirnov test.
+# Check for normal residuals
+qqPlot(resid(m1))
+hist(residuals(m1))
+shapiro.test(resid(m1))
+outlierTest(m1) # checking for outliers - none
+qqPlot(resid(m2))
+hist(residuals(m2))
+shapiro.test(resid(m2))
+outlierTest(m2) # checking for outliers - none
+qqPlot(resid(m3))
+hist(residuals(m3))
+shapiro.test(resid(m3))
+outlierTest(m3) # checking for outliers - none
+
+# checking model results
+anova(m1)
+anova(m2)
+anova(m3)
+
+# Pairwise comparisons
+contrast(emmeans(m1, ~Subplot_Descriptions), "pairwise", simple = "each", combine = F, adjust = "mvt")
+contrast(emmeans(m2, ~Subplot_Descriptions), "pairwise", simple = "each", combine = F, adjust = "mvt")
+contrast(emmeans(m3, ~Treatment), "pairwise", simple = "each", combine = F, adjust = "mvt",
+         pbkrtest.limit = 7000,lmerTest.limit = 7000)
+
+
+
+
+### Figs for supp ###
 ### plot - air temp, soil temp, and soil moisture separate for both years
 level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
 level_order2 <- c("irrigated_control","ambient", 'warmed', 'drought',"warmed_drought") 
