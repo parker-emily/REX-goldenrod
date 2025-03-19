@@ -28,7 +28,7 @@ All analyses were conducted using R (R Core Team 2024)
 
 ### File naming convention: ###
 - Data files: File names typically contain KBS-LTER treatment code (T7), project within the greater Rain Exclusion eXperiment or REX (warmx), plant identifier (soca - Solidago canadensis), response variable, and data stage identifier. Some may include the greater project identifier "REX".
-- Scripts: Scripts are seperated into two folders: L1 and L2. L1 scripts use raw data and clean it, resulting in the cleaned L1 data in the EDI package. The L2 scripts take the cleaned data and analyze/plot it. The scripts are named with respect to their response variable and if the data is being analyzed or plotted. Some traits (e.g. seed production and biomass) are grouped for L2 analysis and figure-making scripts.
+- Scripts: Scripts are seperated into two folders: L1 and L2. L1 scripts use raw data and clean it, resulting in the cleaned L1 data in the EDI package. The L2 scripts take the cleaned data and analyze/plot it. The scripts are named with respect to their response variable, and contain code for both statistical analysis and figure making.
 
 ## Scripts: ##
 ### L1 ###
@@ -37,7 +37,7 @@ L1 scripts use raw data and clean it, resulting in the cleaned L1 data in the ED
 All L1 scripts are cleaning scripts. Some may include "clean" in the file name (e.g. gall_vol_clean_L1.R).
 
 ### L2 ### 
-The L2 scripts take the cleaned data and analyze/plot it. The scripts are named with respect to their response variable and if the data is being analyzed or plotted. Some traits (e.g. seed production and biomass) are grouped for L2 analysis and figure-making scripts.
+The L2 scripts take the cleaned data and analyze/plot it. The scripts are named with respect to their response variable, and contain code for both statistical analysis and figure making.
 
 *file name incoming* is an optional cleaning script that unifies some metadata columns across all L1 files. This includes adding year columns to datasets that don't have them, capitalizing all subplot letters, and renaming the LTER treatment column to the standardized T7. This is an optional script, and does not affect any figures or analyses.
 
