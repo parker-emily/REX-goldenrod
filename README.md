@@ -50,7 +50,7 @@ Collaborators: Emily Parker, Kara Dobson, Moriah Young, Mark Hammond
 For inquiries about the scripts or data, please contact Emily Parker @ parkere5@oregonstate.edu
 
 ### Funding: ###
-Emily Parker was supported by various scholarships through Michigan State University. Support for this research was also provided by the NSF LTER Program (DEB: 2224712) at the Kellogg Biological Station and Michigan State University AgBioResearch.
+Emily Parker was supported by various scholarships through Michigan State University (the MSU KBS Undergraduate Research Apprenticeship program, the MSU College of Natural Science Undergraduate Research Support Program, the Patricia A. Werner Scholarship for Ecological Field Studies, and the Sharin E. & Thomas C. Noall and Charles & Thelma E. Noall Scholarship in Biological and Environmental Science at KBS). Support for this research was also provided by the NSF LTER Program (DEB: 2224712) at the Kellogg Biological Station and Michigan State University AgBioResearch.
 
 
 
