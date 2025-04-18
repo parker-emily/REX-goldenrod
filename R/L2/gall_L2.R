@@ -22,18 +22,18 @@ library(knitr)
 library(ggpubr)
 
 # Set working directory
-dir<-setwd("C:/Users/parkere5/Documents/Goldenrod Data")
+dir<-setwd("DATA_DIR")
 
 # Read in data
-weight <- read.csv(file.path(dir, "T7_warmx_Soca_galls_weight_L1.csv"))
+weight <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_galls_weight_L1.csv"))
 weight <- weight %>%
   filter(!(Climate_Treatment == "Irrigated Control"))
 
-count <- read.csv(file.path(dir, "T7_warmx_Soca_gall_chmb_count_L1.csv"))
+count <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
 count <- count %>%
   filter(!(treatment == "Irrigated Control"))
 
-vol <- read.csv(file.path(dir, "T7_warmx_Soca_gall_chmb_vol_L1.csv"))
+vol <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
 vol <- vol %>%
   filter(!(treatment == "Irrigated Control"))
 
