@@ -1,6 +1,6 @@
 # TITLE:          REX: Gall mass analyses
-# AUTHORS:        Kara Dobson
-# COLLABORATORS:  Phoebe Zarnetske, Moriah Young, Kristin Wolford, Emily Parker, Mark Hammond
+# AUTHORS:        Kara Dobson, Emily Parker
+# COLLABORATORS:  Phoebe Zarnetske, Moriah Young, Kristin Wolford, Mark Hammond
 # DATA INPUT:     Data imported as csv files from shared REX Google drive T7_warmx_insect L1 folder
 # DATA OUTPUT:    analyses
 # PROJECT:        REX
