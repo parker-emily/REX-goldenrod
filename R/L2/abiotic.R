@@ -33,7 +33,7 @@ soil_data$Date_Time <- as.POSIXct(soil_data$sample_datetime, format = "%Y-%m-%d 
 
 
 ### subsetting data ###
-# create new dataframe with only temp data from May - October
+# create new dataframe with only temp data from July - October
 hobo_season <- hobo_data
 hobo_season$month <- format(hobo_season$Date_Time,format="%m")
 hobo_season$year <- format(hobo_season$Date_Time,format="%Y")
@@ -46,7 +46,7 @@ hobo_season_sum <- hobo_season %>%
   filter(!(year == "2023")) %>%
   filter(month >= "07") %>%
   filter(month <= "10")
-# create new dataframe with only soil data from May - October
+# create new dataframe with only soil data from July - October
 soil_season <- soil_data
 soil_season$month <- format(soil_season$Date_Time,format="%m")
 soil_season$year <- format(soil_season$Date_Time,format="%Y")
@@ -60,6 +60,7 @@ soil_season_sum <- soil_season %>%
   filter(!(year == "2023" | year == "2024")) %>%
   filter(month >= "07") %>%
   filter(month <= "10")
+# Separate dataframe for drought check
 soil_drought_check <- soil_season %>%
   filter(!(year == "2023" | year == "2024")) %>%
   filter(monthday >= "0620") %>%
@@ -79,6 +80,11 @@ hobo_temp_avg <- hobo_temp_rep_avg %>%
   summarize(avg_temp = mean(average_temp, na.rm = TRUE),
             se = std.error(average_temp, na.rm = TRUE),
             count=n())
+
+test <- soil_season_sum %>%
+  filter(Subplot_Descriptions == "warmed_drought")
+  group_by(Rep, Treatment, month, year) %>%
+  summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
 
 # take average temp per rep, per treatment, per year
 hobo_temp_rep_avg_year <- hobo_season_sum %>%
