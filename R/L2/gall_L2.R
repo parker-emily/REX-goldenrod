@@ -38,6 +38,7 @@ vol <- vol %>%
   filter(!(treatment == "Irrigated Control"))
 
 
+
 ######## Gall mass analysis ########
 # Data exploration
 descdist(weight$Dried_Weight, discrete = FALSE)
@@ -84,7 +85,6 @@ summary(m1)
 
 
 
-
 ######## Gall mass plotting ########
 # Extract back-transformed EMMs
 emm_weight <- emmeans(m1, ~ Climate_Treatment, type = "response")
@@ -110,6 +110,8 @@ weight_plot <- ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
                axis.text.y = element_text(size = 14),
                axis.title = element_text(size=14,face="bold"))
 weight_plot
+
+
 
 ######## Gall chamber counts analysis ########
 # Data exploration
@@ -160,6 +162,8 @@ summary(m2)
 car::Anova(m2)
 anova(m2)
 
+
+
 ######## Gall chamber count plotting ########
 # Extract back-transformed EMMs
 emm_count <- emmeans(m2, ~ treatment, type = "response")
@@ -187,6 +191,7 @@ count_plot <- ggplot(count, aes(x=treatment, y = num_of_chambers)) +
 count_plot
 
 
+
 ######## Gall chamber volume analysis ########
 # Data exploration
 descdist(vol$chamber_volume_mm3, discrete = FALSE)
@@ -210,7 +215,7 @@ qqnorm(vol$log_vol)
 shapiro.test(vol$log_vol) # really good
 
 # Assumption checking - log transformation
-m3 <- lmer(log_vol ~ treatment + (1|unique_plant_number) + (1|rep/footprint), data = vol, REML=FALSE)
+m3 <- lmer(log(chamber_volume_mm3) ~ treatment + (1|unique_plant_number) + (1|rep/footprint), data = vol, REML=FALSE)
 # Check Assumptions:
 # (1) Linearity: if covariates are not categorical
 # (2) Homogeneity: Need to Check by plotting residuals vs predicted values.
@@ -230,6 +235,8 @@ outlierTest(m3)
 summary(m3)
 anova(m3)
 
+
+
 ######## Gall chamber volume plotting ########
 # Extract back-transformed EMMs
 emm_vol <- emmeans(m3, ~ treatment, type = "response")
@@ -240,10 +247,10 @@ vol_plot <- ggplot(vol, aes(x=treatment, y = chamber_volume_mm3)) +
   geom_jitter(alpha = 0.3, color = "purple4") +
   labs(x = NULL, y = "Chamber volume (mm^3)", title=NULL) +
   geom_errorbar(data = emm_vol_df, 
-                aes(x = treatment, y = emmean, ymin = emmean-SE, ymax = emmean+SE), 
+                aes(x = treatment, y = response, ymin = response-SE, ymax = response+SE), 
                 width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
   geom_point(data = emm_vol_df, 
-             aes(x = treatment, y = emmean), 
+             aes(x = treatment, y = response), 
              shape = 21, size = 3, color = "black",fill = "purple4", position = position_dodge(width = 0.9)) +
   scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
@@ -261,6 +268,8 @@ png("gall_weight_count_vol.png", units="in", width=11, height=5, res=300)
 ggarrange(weight_plot, count_plot, vol_plot,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
 dev.off()
+
+
 
 ### For supp: gall biomass plots split by year ###
 m4 <- lmer(sqrt(Dried_Weight) ~ Climate_Treatment + Year + (1|Rep/Footprint/Subplot), data = weight, REML=FALSE)
