@@ -245,7 +245,7 @@ emm_vol_df <- as.data.frame(emm_vol)
 #png("gall_mass.png", units="in", width=6, height=4, res=300)
 vol_plot <- ggplot(vol, aes(x=treatment, y = chamber_volume_mm3)) +
   geom_jitter(alpha = 0.3, color = "purple4") +
-  labs(x = NULL, y = "Chamber volume (mm^3)", title=NULL) +
+  labs(x = NULL, y = "Chamber volume (mm³)", title=NULL) +
   geom_errorbar(data = emm_vol_df, 
                 aes(x = treatment, y = response, ymin = response-SE, ymax = response+SE), 
                 width = 0.2, color = "black", position = position_dodge(width = 0.9)) +
