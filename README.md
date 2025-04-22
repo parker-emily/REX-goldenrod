@@ -20,7 +20,7 @@ Workflow image credit: https://edirepository.org/resources/designing-a-data-pack
 The L1 data assocaited with this repository are available in an EDI package (in prep).
 
 ## Spatiotemporal extent: ##
-- Spatial extent: Kellogg Biological Station Long Term Ecological Research site (KBS-LTER), Hickory Corners, MI, USA. All data were collected in the early successional (T7) plots
+- Spatial extent: Kellogg Biological Station Long Term Ecological Research site (KBS-LTER), Hickory Corners, MI, USA. All data were collected in the early successional (T7) plots. 
 - Temporal extent: end of growing season (September - October) 2021 & 2022
 
 ## Usage: ##
@@ -50,7 +50,8 @@ Collaborators: Emily Parker, Kara Dobson, Moriah Young, Mark Hammond
 For inquiries about the scripts or data, please contact Emily Parker @ parkere5@oregonstate.edu
 
 ### Funding: ###
-Emily Parker was supported by various scholarships through Michigan State University (the MSU KBS Undergraduate Research Apprenticeship program, the MSU College of Natural Science Undergraduate Research Support Program, the Patricia A. Werner Scholarship for Ecological Field Studies, and the Sharin E. & Thomas C. Noall and Charles & Thelma E. Noall Scholarship in Biological and Environmental Science at KBS). Support for this research was also provided by the NSF LTER Program (DEB: 2224712) at the Kellogg Biological Station and Michigan State University AgBioResearch.
+Funding for EP was provided by MSU KBS Undergraduate Research Apprenticeship program, the MSU College of Natural Science Undergraduate Research Support Program, the Patricia A. Werner Scholarship for Ecological Field Studies, and the Sharin E. & Thomas C. Noall and Charles & Thelma E. Noall Scholarship in Biological and Environmental Science at KBS. Support for this research was also provided by the NSF Long-term Ecological Research Program (DEB 2224712) at the Kellogg Biological Station and by Michigan State University AgBioResearch. Funding to PLZ was provided by Michigan State University, and NSF DEB #2224712. Funding to MY was provided by NSF GRF (DGE 184-8739), Michigan State University, and Kellogg Biological Station. Funding to KD was provided by NSF IMPACTS (DGE 1828149), Michigan State University, and Kellogg Biological Station.
 
-
+### Land Acknowledgement: ###
+The lands Michigan State University and the KBS LTER occupy are the ancestral, traditional, and contemporary Lands of the Anishinaabeg – Three Fires Confederacy of Ojibwe, Odawa, and Potawatomi peoples, ceded in the 1819 Treaty of Saginaw (MSU) and the 1821 Treaty of Chicago (KBS). We offer this Land Acknowledgement, we affirm Indigenous sovereignty, and respectfully acknowledge the original inhabitants and descendants of the lands we use to conduct research.
 
