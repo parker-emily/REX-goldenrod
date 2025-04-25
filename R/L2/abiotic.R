@@ -41,7 +41,7 @@ hobo_season$hour <- format(hobo_season$Date_Time, format="%H")
 hobo_season$day <- format(hobo_season$Date_Time, format="%d")
 hobo_season$year_month_day <- format(hobo_season$Date_Time, format="%Y-%m-%d")
 hobo_season$date <- paste0(hobo_season$month,"",hobo_season$day)
-hobo_season$date <- as.numeric(hobo_season$date)
+#hobo_season$date <- as.numeric(hobo_season$date)
 hobo_season_sum <- hobo_season %>%
   filter(!(year == "2023")) %>%
   filter(month >= "07") %>%
@@ -72,27 +72,24 @@ soil_drought_check <- soil_season %>%
 ### temperature average from July - Oct ###
 # take average temp per rep, per treatment
 hobo_temp_rep_avg <- hobo_season_sum %>%
-  group_by(Rep, Treatment) %>%
+  filter(!(year == 2021 & Subplot_Descriptions == "drought")) %>%
+  filter(!(year == 2021 & Subplot_Descriptions == "warmed_drought")) %>%
+  group_by(Rep, Subplot_Descriptions) %>%
   summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
 # averaging over each rep so n=6 for each treatment
 hobo_temp_avg <- hobo_temp_rep_avg %>%
-  group_by(Treatment) %>%
+  group_by(Subplot_Descriptions) %>%
   summarize(avg_temp = mean(average_temp, na.rm = TRUE),
             se = std.error(average_temp, na.rm = TRUE),
             count=n())
 
-test <- soil_season_sum %>%
-  filter(Subplot_Descriptions == "warmed_drought")
-  group_by(Rep, Treatment, month, year) %>%
-  summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
-
 # take average temp per rep, per treatment, per year
 hobo_temp_rep_avg_year <- hobo_season_sum %>%
-  group_by(Rep, Treatment, year) %>%
+  group_by(Rep,Subplot_Descriptions, year) %>%
   summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
 # averaging over each rep so n=6 for each treatment
 hobo_temp_avg_year <- hobo_temp_rep_avg_year %>%
-  group_by(Treatment, year) %>%
+  group_by(Subplot_Descriptions, year) %>%
   summarize(avg_temp = mean(average_temp, na.rm = TRUE),
             se = std.error(average_temp, na.rm = TRUE),
             count=n())
@@ -142,16 +139,16 @@ dr_check <- soil_drought_check %>%
 level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
 level_order2 <- c("ambient", 'warmed', 'drought',"warmed_drought") 
 
-air_temp <- ggplot(data = hobo_temp_rep_avg, aes(x = factor(Treatment, level = level_order1), y = average_temp)) +
+air_temp <- ggplot(data = hobo_temp_rep_avg, aes(x = factor(Subplot_Descriptions, level = level_order2), y = average_temp)) +
   geom_jitter(size=1, alpha=0.4,color="purple4") +
-  geom_pointrange(data=hobo_temp_avg, aes(x = factor(Treatment, level = level_order1), y = avg_temp,
+  geom_pointrange(data=hobo_temp_avg, aes(x = factor(Subplot_Descriptions, level = level_order2), y = avg_temp,
                                           ymin=avg_temp-se, ymax=avg_temp+se),
                   pch=21,size=1,fill="purple4") +
   labs(y="Air temperature (°C)", x=NULL) +
-  scale_x_discrete(labels=c("Ambient" = "Ambient", "Drought" = "Drought",
-                            "Warmed" = "Warmed",
-                            "Warmed_Drought" = "Warmed &\nDrought")) +
-  annotate("text", x = 0.6, y=23.5, label = "A", size=5) +
+  scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
+                            "warmed" = "Warmed",
+                            "warmed_drought" = "Warmed &\nDrought")) +
+  annotate("text", x = 0.6, y=23.7, label = "A", size=5) +
   theme_bw() +
   theme(axis.title = element_text(size=17, face="bold"),
         axis.text = element_text(size=15),
@@ -206,7 +203,9 @@ daily_soil_temp <- soil_season_sum %>%
   group_by(year_month_day,year,Subplot_Descriptions,Replicate) %>%
   summarize(average_temp = mean(temperature, na.rm = TRUE))
 daily_air_temp <- hobo_season_sum %>%
-  group_by(year_month_day,year,Treatment,Rep) %>%
+  filter(!(year == 2021 & Subplot_Descriptions == "drought")) %>%
+  filter(!(year == 2021 & Subplot_Descriptions == "warmed_drought")) %>%
+  group_by(year_month_day,year,Subplot_Descriptions,Rep) %>%
   summarize(average_temp = mean(Temperature_C, na.rm = TRUE))
 # in the assumption checking, we're making sure that our full model meets the assumptions of the model.
 # the model below is the model structure we can use for all response variables; its testing to see
@@ -215,7 +214,7 @@ daily_air_temp <- hobo_season_sum %>%
 # to account for variation between plots. Year is also included as a random effect to account for variation between years.
 m1 <- lmer(average_moist ~ Subplot_Descriptions + (1|Replicate) + (1|year), data = daily_soil_moist, REML=F)
 m2 <- lmer(average_temp ~ Subplot_Descriptions + (1|Replicate) + (1|year), data = daily_soil_temp, REML=F)
-m3 <- lmer(average_temp ~ Treatment + (1|Rep) + (1|year), data = daily_air_temp, REML=F)
+m3 <- lmer(average_temp ~ Subplot_Descriptions + (1|Rep) + (1|year), data = daily_air_temp, REML=F)
 # Check Assumptions:
 # (1) Linearity: if covariates are not categorical
 # (2) Homogeneity: Need to Check by plotting residuals vs predicted values.
@@ -226,7 +225,7 @@ plot(m3)
 # Check for homogeneity of variances (true if p>0.05). If the result is not significant, the assumption of equal variances (homoscedasticity) is met (no significant difference between the group variances).
 leveneTest(residuals(m1) ~ daily_soil_moist$Subplot_Descriptions) # not met
 leveneTest(residuals(m2) ~ daily_soil_temp$Subplot_Descriptions) # met
-leveneTest(residuals(m3) ~ daily_air_temp$Treatment) # met
+leveneTest(residuals(m3) ~ daily_air_temp$Subplot_Descriptions) # met
 # (3) Normality of error term: need to check by histogram, QQplot of residuals, could do Kolmogorov-Smirnov test.
 # Check for normal residuals
 qqPlot(resid(m1))
@@ -250,22 +249,25 @@ anova(m3)
 # Pairwise comparisons
 contrast(emmeans(m1, ~Subplot_Descriptions), "pairwise", simple = "each", combine = F, adjust = "mvt")
 contrast(emmeans(m2, ~Subplot_Descriptions), "pairwise", simple = "each", combine = F, adjust = "mvt")
-contrast(emmeans(m3, ~Treatment), "pairwise", simple = "each", combine = F, adjust = "mvt",
+contrast(emmeans(m3, ~Subplot_Descriptions), "pairwise", simple = "each", combine = F, adjust = "mvt",
          pbkrtest.limit = 7000,lmerTest.limit = 7000)
 
 
 
 
 ### Figs for supp ###
+# Remove irr.
+soil_sampling_avg_year <- soil_sampling_avg_year %>%
+  filter(!(Subplot_Descriptions == "irrigated_control"))
 ### plot - air temp, soil temp, and soil moisture separate for both years
 level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
 level_order2 <- c("irrigated_control","ambient", 'warmed', 'drought',"warmed_drought") 
-air_temp_yearly <- ggplot(hobo_temp_avg_year, aes(x = factor(Treatment, level = level_order1), y = avg_temp, fill=year)) +
+air_temp_yearly <- ggplot(hobo_temp_avg_year, aes(x = factor(Subplot_Descriptions, level = level_order2), y = avg_temp, fill=year)) +
   geom_pointrange(aes(ymin=avg_temp-se, ymax=avg_temp+se),pch=21,size=1,position=position_jitter(w=0.1)) +
   labs(y="Air temperature (°C)", x=NULL) +
-  scale_x_discrete(labels=c("Ambient" = "Ambient", "Drought" = "Drought",
-                            "Warmed" = "Warmed",
-                            "Warmed_Drought" = "Warmed &\nDrought")) +
+  scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
+                            "warmed" = "Warmed",
+                            "warmed_drought" = "Warmed &\nDrought")) +
   theme_bw() +
   #annotate("text", x = 0.6, y=23, label = "A", size=6) +
   scale_fill_manual(name="Year",
@@ -281,7 +283,7 @@ soil_temp_yearly <- ggplot(soil_sampling_avg_year, aes(x = factor(Subplot_Descri
   #geom_point(size = 2) +
   labs(y="Soil temperature (°C)", x=NULL) +
   scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
-                            "irrigated_control" = "Irrigated", "warmed" = "Warmed",
+                            "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
   theme_bw() +
   # annotate("text", x = 0.7, y=21.3, label = "B", size=6) +
@@ -298,7 +300,7 @@ soil_moist_yearly <- ggplot(soil_sampling_avg_year, aes(x = factor(Subplot_Descr
   #geom_point(size = 2) +
   labs(y=bquote("Soil moisture " (m^3/m^3)), x=NULL) +
   scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
-                            "irrigated_control" = "Irrigated", "warmed" = "Warmed",
+                            "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
   theme_bw() +
   #annotate("text", x = 0.7, y=0.28, label = "C", size=6) +
