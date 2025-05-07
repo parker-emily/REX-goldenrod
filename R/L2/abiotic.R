@@ -136,8 +136,8 @@ dr_check <- soil_drought_check %>%
 
 ### main figure ###
 ### plot - air temp, soil temp, and soil moisture averaged over both years
-level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
-level_order2 <- c("ambient", 'warmed', 'drought',"warmed_drought") 
+level_order1 <- c("Ambient", 'Drought','Warmed', "Warmed_Drought") 
+level_order2 <- c("ambient",'drought','warmed',"warmed_drought") 
 
 air_temp <- ggplot(data = hobo_temp_rep_avg, aes(x = factor(Subplot_Descriptions, level = level_order2), y = average_temp)) +
   geom_jitter(size=1, alpha=0.4,color="purple4") +
@@ -260,8 +260,8 @@ contrast(emmeans(m3, ~Subplot_Descriptions), "pairwise", simple = "each", combin
 soil_sampling_avg_year <- soil_sampling_avg_year %>%
   filter(!(Subplot_Descriptions == "irrigated_control"))
 ### plot - air temp, soil temp, and soil moisture separate for both years
-level_order1 <- c("Ambient", 'Warmed', 'Drought',"Warmed_Drought") 
-level_order2 <- c("irrigated_control","ambient", 'warmed', 'drought',"warmed_drought") 
+level_order1 <- c("Ambient", 'Drought','Warmed', "Warmed_Drought") 
+level_order2 <- c("irrigated_control","ambient", 'drought', 'warmed',"warmed_drought") 
 air_temp_yearly <- ggplot(hobo_temp_avg_year, aes(x = factor(Subplot_Descriptions, level = level_order2), y = avg_temp, fill=year)) +
   geom_pointrange(aes(ymin=avg_temp-se, ymax=avg_temp+se),pch=21,size=1,position=position_jitter(w=0.1)) +
   labs(y="Air temperature (°C)", x=NULL) +
