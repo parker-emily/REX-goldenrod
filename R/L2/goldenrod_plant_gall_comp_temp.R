@@ -1,5 +1,8 @@
 library(ggplot2)
-dir <- setwd("C:/Users/Emily/Documents/EDI data")
+library(ggpubr)
+library(tidyverse)
+
+dir <- setwd("C:/Users/parkere5/Documents/Goldenrod Data")
 height <- read.csv("T7_warmx_soca_height_harvest_L1.csv")
 gall <- read.csv("T7_warmx_Soca_galls_L1.csv")
 biomass <- read.csv("T7_warmx_soca_biomass_L1.csv")
@@ -23,7 +26,6 @@ bm_plot <- ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
 png("gall_regression.png", units="in", width=11, height=5, res=300)
 ggarrange(height_plot, bm_plot,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
-dev.off()
 
 height_lm <- lm(Dried_Weight ~ Height_cm, data = clean)
 summary(height_lm)
