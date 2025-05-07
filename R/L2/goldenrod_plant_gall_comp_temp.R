@@ -1,6 +1,10 @@
+# Clear all existing data
+rm(list=ls())
+
 library(ggplot2)
 library(ggpubr)
 library(tidyverse)
+
 
 dir <- setwd("C:/Users/parkere5/Documents/Goldenrod Data")
 height <- read.csv("T7_warmx_soca_height_harvest_L1.csv")
@@ -10,22 +14,35 @@ biomass <- read.csv("T7_warmx_soca_biomass_L1.csv")
 clean <- merge(height, gall, by = c("Unique_ID", "Treatment", "Rep", "Footprint", "Subplot", "Climate_Treatment", "Year"))
 clean <- clean %>%
   merge(biomass, by = c("Unique_ID", "Treatment", "Rep", "Footprint", "Subplot", "Climate_Treatment", "Year", "Galling_Status")) %>%
-  select(-Harvest_Date.y)
+  select(-Harvest_Date.y) #remove duplicate harvest date column
 
-height_plot <- ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
+height_plot <- 
+  ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem height (cm)", y = "Dried gall biomass (g)")
+  labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
+  annotate("text", x = 35, y=2, label = "A", size=5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_text(size=14,face="bold"))
 
-bm_plot <- ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
+bm_plot <- 
+  ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color="black") + 
-  labs(x = "Stem biomass (g)", y = "Dried gall biomass (g)")
+  labs(x = "Stem biomass (g)", y = "Dried gall biomass (g)") +
+  annotate("text", x = 1.5, y=2, label = "B", size=5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(size = 11),
+        axis.text.y = element_text(size = 14),
+        axis.title = element_text(size=14,face="bold"))
 
 #export png
 png("gall_regression.png", units="in", width=11, height=5, res=300)
 ggarrange(height_plot, bm_plot,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
+dev.off()
 
 height_lm <- lm(Dried_Weight ~ Height_cm, data = clean)
 summary(height_lm)
