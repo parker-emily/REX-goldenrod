@@ -107,7 +107,7 @@ ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, f
              shape = 21, size = 3, color = "black", position = position_dodge(width = 0.9)) +
   scale_fill_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
   scale_color_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
-  labs(x = NULL, y = "Plant height (cm)", title=NULL) +
+  labs(x = NULL, y = "Stem height (cm)", title=NULL) +
   scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
@@ -142,7 +142,7 @@ ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, f
              shape = 21, size = 3, color = "black", position = position_dodge(width = 0.9)) +
   scale_fill_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
   scale_color_manual(values = c("purple4", "plum1"), name="Galling status",labels=c("Galled","Non-Galled")) +
-  labs(x = NULL, y = "Plant height (cm)", title=NULL) +
+  labs(x = NULL, y = "Stem height (cm)", title=NULL) +
   scale_x_discrete(limits = c("Ambient", "Ambient Drought", "Warm", "Warm Drought"),
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
