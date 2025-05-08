@@ -66,7 +66,7 @@ bm_treat <-
 ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
+  labs(x="Stem biomass (g)", y = "Dried gall biomass (g)") +
   facet_wrap(~Climate_Treatment) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 11),
@@ -77,7 +77,7 @@ bm_year <-
   ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
+  labs(x="Stem biomass (g)", y = "Dried gall biomass (g)") +
   facet_wrap(~Year) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 11),
