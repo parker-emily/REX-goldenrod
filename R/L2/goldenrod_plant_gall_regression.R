@@ -116,7 +116,7 @@ height_count <-
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
 
-bm_plot <- 
+bm_plot1 <- 
   ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color="black") + 
@@ -126,10 +126,10 @@ bm_plot <-
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
-bm_plot
+bm_plot1
 
 # same plot as above but points are colored by climate treatment
-bm_plot <- 
+bm_plot2 <- 
         ggplot(clean, aes(x=Biomass, y= Dried_Weight, fill = Climate_Treatment)) +
         geom_point(shape = 21, size = 3) + 
         geom_smooth(method = lm, se = FALSE, aes(color = Climate_Treatment)) + 
@@ -139,7 +139,7 @@ bm_plot <-
         theme(axis.text.x = element_text(size = 11),
               axis.text.y = element_text(size = 14),
               axis.title = element_text(size=14,face="bold"))
-bm_plot
+bm_plot2
 
 bm_treat <-
 ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
@@ -211,8 +211,16 @@ ggarrange(height_count, bm_count,
 dev.off()
 
 ##stats
-height_lm <- lm(Dried_Weight ~ Height_cm, data = clean)
-summary(height_lm)
+# height
+height_lm_1 <- lm(Dried_Weight ~ Height_cm, data = clean)
+summary(height_lm_1)
 
-biomass_lm <- lm(Dried_Weight ~ Biomass, data = clean)
-summary(biomass_lm)
+height_lm_2 <- lm(Dried_Weight ~ Height_cm * Climate_Treatment, data = clean)
+summary(height_lm_2)
+
+# biomass
+biomass_lm_1 <- lm(Dried_Weight ~ Biomass, data = clean)
+summary(biomass_lm_1)
+
+biomass_lm_2 <- lm(Dried_Weight ~ Biomass * Climate_Treatment, data = clean)
+summary(biomass_lm_2)
