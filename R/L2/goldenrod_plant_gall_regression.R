@@ -5,14 +5,23 @@ library(ggplot2)
 library(ggpubr)
 library(tidyverse)
 
+# Set working directory from .Renviron
+dir <- Sys.getenv("DATA_DIR")
+list.files(dir)
 
+height <- read.csv(file.path(dir, "/T7_warmx_plant_traits/L1/T7_warmx_soca_height_harvest_L1.csv"))
+gall <- read.csv(file.path(dir, "/T7_warmx_insect/L1/T7_warmx_Soca_galls_L1.csv"))
+biomass <- read.csv(file.path(dir, "/T7_warmx_plant_traits/L1/T7_warmx_soca_biomass_L1.csv"))
+chmb_vol <- read.csv(file.path(dir, "/T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
+chmb_count <- read.csv(file.path(dir, "/T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
+
+# Emily's
 dir <- setwd("C:/Users/parkere5/Documents/Goldenrod Data")
 height <- read.csv("T7_warmx_soca_height_harvest_L1.csv")
 gall <- read.csv("T7_warmx_Soca_galls_L1.csv")
 biomass <- read.csv("T7_warmx_soca_biomass_L1.csv")
 chmb_vol <- read.csv("T7_warmx_Soca_gall_chmb_vol_L1.csv")
 chmb_count <- read.csv("T7_warmx_Soca_gall_chmb_count_L1.csv")
-
 
 #rename chamber columns
 chmb_vol <- chmb_vol %>% 
@@ -28,7 +37,6 @@ chmb_count <- chmb_count %>%
          "Climate_Treatment" = "treatment")
 
 
-
 #merge gall characters
 gall <- merge(gall, chmb_count, by = c("Unique_ID", "Rep", "Footprint", "Climate_Treatment"))
 gall <- merge(gall, chmb_vol, by = c("Unique_ID", "Rep", "Footprint", "Climate_Treatment"))
@@ -40,7 +48,7 @@ clean <- clean %>%
   select(-Harvest_Date.y) %>% #remove duplicate harvest date column 
   filter(Climate_Treatment != "Irrigated Control")
 
-height_plot <- 
+height_plot1 <- 
   ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
   geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
   geom_smooth(method = lm, se = FALSE, color = "black") +
@@ -50,6 +58,20 @@ height_plot <-
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
+height_plot1
+
+# same graph as above but color by treatment
+height_plot2 <- 
+        ggplot(clean, aes(x=Height_cm, y= Dried_Weight, fill = Climate_Treatment)) +
+        geom_point(shape = 21, size = 3) + 
+        geom_smooth(method = lm, se = FALSE, aes(color = Climate_Treatment)) +
+        labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
+        annotate("text", x = 35, y=2, label = "A", size=5) +
+        theme_bw() +
+        theme(axis.text.x = element_text(size = 11),
+              axis.text.y = element_text(size = 14),
+              axis.title = element_text(size=14,face="bold"))
+height_plot2
 
 height_treat <-
   ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
@@ -61,6 +83,7 @@ height_treat <-
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
+height_treat
 
 height_year <-
   ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
@@ -103,6 +126,20 @@ bm_plot <-
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
+bm_plot
+
+# same plot as above but points are colored by climate treatment
+bm_plot <- 
+        ggplot(clean, aes(x=Biomass, y= Dried_Weight, fill = Climate_Treatment)) +
+        geom_point(shape = 21, size = 3) + 
+        geom_smooth(method = lm, se = FALSE, aes(color = Climate_Treatment)) + 
+        labs(x = "Stem biomass (g)", y = "Dried gall biomass (g)") +
+        annotate("text", x = 1.5, y=2, label = "B", size=5) +
+        theme_bw() +
+        theme(axis.text.x = element_text(size = 11),
+              axis.text.y = element_text(size = 14),
+              axis.title = element_text(size=14,face="bold"))
+bm_plot
 
 bm_treat <-
 ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
