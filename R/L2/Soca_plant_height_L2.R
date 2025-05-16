@@ -25,9 +25,14 @@ dir<-Sys.getenv("DATA_DIR")
 
 # Read in data
 height <- read.csv(file.path(dir, "/T7_warmx_plant_traits/L1/T7_warmx_soca_height_harvest_L1.csv"))
+height$Year <- as.factor(height$Year)
 
 # remove irrigated control treatement for analysis
 height <- height %>% filter(Climate_Treatment != "Irrigated Control")
+
+#remove plants with incorrect galling status label
+height <- height %>% filter(!(Unique_ID == "217" & Year == "2022" | Unique_ID == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
+
 
 ###### Data exploration #######
 # The first thing we do is check the distribution of the raw data
@@ -89,6 +94,7 @@ anova(m1) # Interactive effect between climate and galling
 contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
 
 
+# Pairwise comparisons for climate treatments
 
 
 ######## Height plotting ########
@@ -119,7 +125,6 @@ ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, f
         legend.title = element_text(size=11,face="bold"),
         legend.text = element_text(size=11))
 dev.off()
-
 
 
 

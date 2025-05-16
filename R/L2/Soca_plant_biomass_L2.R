@@ -31,6 +31,9 @@ biomass$Year <- as.factor(biomass$Year)
 # remove irrigated control treatement for analysis
 biomass <- biomass %>% filter(Climate_Treatment != "Irrigated Control")
 
+#remove plants with incorrect galling status label
+biomass <- biomass %>% filter(!(Unique_ID == "217" & Year == "2022" | Unique_ID == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
+
 ###### Data exploration #######
 # The first thing we do is check the distribution of the raw data
 # We're checking for a normal distribution; the distribution of the raw data
@@ -76,6 +79,7 @@ shapiro.test(resid(raw.data.test.sqrt))
 # of climate on height depend on galling status. Subplot nested within footprint nested within rep is used as our random effect
 # to account for variation between plots. Year is also included as a random effect to account for variation between years.
 m1 <- lmer(sqrt(Biomass) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = biomass, REML=F)
+
 # Check Assumptions:
 # (1) Linearity: if covariates are not categorical
 # (2) Homogeneity: Need to Check by plotting residuals vs predicted values.
@@ -107,14 +111,13 @@ summary(m1)
 
 # Pairwise comparisons for climate treatments
 # back-transforming - A vs. W
-(2.02736)^2-((2.02736-0.42693)^2) # 1.548812 - warmed plants weighed ~1.55 g more than ambient
+(2.02745)^2-((2.02745-0.42824)^2) # 1.553081 - warmed plants weighed ~1.55 g more than ambient
 # back-transforming - A vs. WD
-(2.02736)^2-((2.02736-0.53073)^2) # 1.870287 - warmed + drought plants weighed ~1.87 g more than ambient
+(2.02745)^2-((2.02745-0.53052)^2) # 1.869754 - warmed + drought plants weighed ~1.87 g more than ambient
 
 # Pairwise comparisons for non-galled vs galled
 # back-transforming - galled vs. non-galled
-(2.02736)^2-((2.02736-(-0.02615))^2) # -0.1067148 - non-galled plants weighed 0.11 g less than galled plants
-
+(2.02745)^2-((2.02745-(-0.02399))^2) # -0.09785257 - non-galled plants weighed 0.10 g less than galled plants
 
 # contrasts for interaction - treatment * galling status
 contrast3 <- contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
