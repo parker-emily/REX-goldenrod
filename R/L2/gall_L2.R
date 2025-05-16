@@ -27,15 +27,19 @@ dir<-setwd("DATA_DIR")
 # Read in data
 weight <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_galls_weight_L1.csv"))
 weight <- weight %>%
-  filter(!(Climate_Treatment == "Irrigated Control"))
+  filter(!(Climate_Treatment == "Irrigated Control")) %>%
+  filter(!(unique_plant_number == "217" & Year == "2022" | unique_plant_number == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
+  
 
 count <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
 count <- count %>%
-  filter(!(treatment == "Irrigated Control"))
+  filter(!(treatment == "Irrigated Control")) %>%
+  filter(!(unique_plant_number == "285"))
 
 vol <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
 vol <- vol %>%
-  filter(!(treatment == "Irrigated Control"))
+  filter(!(treatment == "Irrigated Control")) %>%
+  filter(!(unique_plant_number == "285")) #only 2021 data
 
 
 
@@ -298,3 +302,4 @@ ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
 dev.off()
+
