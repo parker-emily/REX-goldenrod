@@ -48,6 +48,8 @@ clean <- clean %>%
   filter(Climate_Treatment != "Irrigated Control") %>%
   filter(Galling_Status != "Non-galled") #removes non-galled plants
 
+#factor year for graphing
+clean$Year <- levels(as.factor(clean$Year))
 
 #plots
 height_plot1 <- 
@@ -75,28 +77,18 @@ height_plot2 <-
               axis.title = element_text(size=14,face="bold"))
 height_plot2
 
-height_treat <-
-  ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
-  geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
+height_plot3 <- 
+  ggplot(clean, aes(x=Height_cm, y= Dried_Weight, fill = Year)) +
+  geom_point(shape = 21, size = 3) + 
+  geom_smooth(method = lm, se = FALSE, aes(color = Year)) +
   labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
-  facet_wrap(~Climate_Treatment) +
+  annotate("text", x = 35, y=2, label = "A", size=5) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
-height_treat
+height_plot3
 
-height_year <-
-  ggplot(clean, aes(x=Height_cm, y= Dried_Weight)) +
-  geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem height (cm)", y = "Dried gall biomass (g)") +
-  facet_wrap(~Year) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 14),
-        axis.title = element_text(size=14,face="bold"))
 
 # height_vol <-
 #   ggplot(clean, aes(x=Height_cm, y= chamber_volume_mm3)) +
@@ -143,27 +135,18 @@ bm_plot2 <-
               axis.title = element_text(size=14,face="bold"))
 bm_plot2
 
-bm_treat <-
-ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
-  geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem biomass (g)", y = "Dried gall biomass (g)") +
-  facet_wrap(~Climate_Treatment) +
+bm_plot3 <- 
+  ggplot(clean, aes(x=Biomass, y= Dried_Weight, fill = Year)) +
+  geom_point(shape = 21, size = 3) + 
+  geom_smooth(method = lm, se = FALSE, aes(color = Year)) + 
+  labs(x = "Stem biomass (g)", y = "Dried gall biomass (g)") +
+  annotate("text", x = 1.5, y=2, label = "B", size=5) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
+bm_plot3
 
-bm_year <-
-  ggplot(clean, aes(x=Biomass, y= Dried_Weight)) +
-  geom_point(shape = 21, size = 3, color = "black",fill = "purple4") + 
-  geom_smooth(method = lm, se = FALSE, color = "black") +
-  labs(x="Stem biomass (g)", y = "Dried gall biomass (g)") +
-  facet_wrap(~Year) +
-  theme_bw() +
-  theme(axis.text.x = element_text(size = 11),
-        axis.text.y = element_text(size = 14),
-        axis.title = element_text(size=14,face="bold"))
 
 # bm_vol <-
 #   ggplot(clean, aes(x=Biomass, y= chamber_volume_mm3)) +
@@ -187,8 +170,8 @@ bm_year <-
 
 
 #export pngs
-png("gall_regression.png", units="in", width=11, height=5, res=300)
-ggarrange(height_plot, bm_plot,
+png("gall_regression1.png", units="in", width=11, height=5, res=300)
+ggarrange(height_plot1, bm_plot1,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
 dev.off()
 
@@ -197,13 +180,8 @@ ggarrange(height_plot2, bm_plot2,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
 dev.off()
 
-png("gall_regression_treatment.png", units="in", width=11, height=5, res=300)
-ggarrange(height_treat, bm_treat,
-          nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
-dev.off()
-
-png("gall_regression_year.png", units="in", width=11, height=5, res=300)
-ggarrange(height_year, bm_year,
+png("gall_regression3.png", units="in", width=11, height=5, res=300)
+ggarrange(height_plot3, bm_plot3,
           nrow = 1, common.legend = T, legend="right",widths = c(1, 1))
 dev.off()
 
@@ -225,9 +203,11 @@ summary(height_lm_1)
 height_lm_2 <- lm(Dried_Weight ~ Height_cm * Climate_Treatment, data = clean)
 summary(height_lm_2)
 
+
 # biomass
 biomass_lm_1 <- lm(Dried_Weight ~ Biomass, data = clean)
 summary(biomass_lm_1)
 
 biomass_lm_2 <- lm(Dried_Weight ~ Biomass * Climate_Treatment, data = clean)
 summary(biomass_lm_2)
+
