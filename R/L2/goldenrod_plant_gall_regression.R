@@ -201,6 +201,7 @@ height_lm_1 <- lm(Dried_Weight ~ Height_cm, data = clean)
 summary(height_lm_1)
 
 height_lm_2 <- lm(Dried_Weight ~ Height_cm * Climate_Treatment, data = clean)
+anova(height_lm_2)
 summary(height_lm_2)
 
 
@@ -209,5 +210,6 @@ biomass_lm_1 <- lm(Dried_Weight ~ Biomass, data = clean)
 summary(biomass_lm_1)
 
 biomass_lm_2 <- lm(Dried_Weight ~ Biomass * Climate_Treatment, data = clean)
+anova(biomass_lm_2)
 summary(biomass_lm_2)
 
