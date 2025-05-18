@@ -138,6 +138,8 @@ mass_binom_sum <- mass_binom %>%
 mass_binom_seed <- mass_binom_sum %>%
   filter(Seeds_Mass == "Seed")
 
+seed$Galling_Status <- factor(seed$Galling_Status, levels = c("Galled", "Non-Galled"))
+
 # Weight plot
 weight_plot <- ggplot(seed, aes(x=Climate_Treatment, y = Seeds_Mass, color = Galling_Status, fill = Galling_Status)) +
   geom_point(size=1, position=position_jitterdodge(), alpha=0.4) +
