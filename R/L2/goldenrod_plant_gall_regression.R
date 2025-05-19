@@ -44,7 +44,7 @@ chmb_count <- chmb_count %>%
 clean <- merge(height, gall, by = c("Unique_ID", "Treatment", "Rep", "Footprint", "Subplot", "Climate_Treatment", "Year"))
 clean <- clean %>%
   merge(biomass, by = c("Unique_ID", "Treatment", "Rep", "Footprint", "Subplot", "Climate_Treatment", "Year", "Galling_Status")) %>%
-  select(-Harvest_Date.y) %>% #remove duplicate harvest date column 
+  #select(-Harvest_Date.y) %>% #remove duplicate harvest date column 
   filter(Climate_Treatment != "Irrigated Control") %>%
   filter(Galling_Status != "Non-galled") #removes non-galled plants
 
@@ -198,6 +198,7 @@ dev.off()
 ##stats
 # height
 height_lm_1 <- lm(Dried_Weight ~ Height_cm, data = clean)
+anova(height_lm_1)
 summary(height_lm_1)
 
 height_lm_2 <- lm(Dried_Weight ~ Height_cm * Climate_Treatment, data = clean)
@@ -207,6 +208,7 @@ summary(height_lm_2)
 
 # biomass
 biomass_lm_1 <- lm(Dried_Weight ~ Biomass, data = clean)
+anova(biomass_lm_1)
 summary(biomass_lm_1)
 
 biomass_lm_2 <- lm(Dried_Weight ~ Biomass * Climate_Treatment, data = clean)
