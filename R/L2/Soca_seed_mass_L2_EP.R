@@ -138,6 +138,7 @@ mass_binom_sum <- mass_binom %>%
 mass_binom_seed <- mass_binom_sum %>%
   filter(Seeds_Mass == "Seed")
 
+emm_weight_df$Galling_Status <- factor(emm_weight_df$Galling_Status, levels = c("Galled", "Non-Galled"))
 seed$Galling_Status <- factor(seed$Galling_Status, levels = c("Galled", "Non-Galled"))
 
 # Weight plot
@@ -164,6 +165,9 @@ weight_plot <- ggplot(seed, aes(x=Climate_Treatment, y = Seeds_Mass, color = Gal
         legend.title = element_text(size=12,face="bold"),
         legend.text = element_text(size=12))
 weight_plot
+
+mass_binom_seed$Galling_Status <- factor(mass_binom_seed$Galling_Status, levels = c("Galled", "Non-Galled"))
+emm_prob_df$Galling_Status <- factor(emm_prob_df$Galling_Status, levels = c("Galled", "Non-Galled"))
 
 # Probability plot
 prob_plot <- ggplot(mass_binom_seed, aes(x=Climate_Treatment, y = mean_n, color = Galling_Status, fill = Galling_Status)) +
