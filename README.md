@@ -20,7 +20,7 @@ Workflow image credit: https://edirepository.org/resources/designing-a-data-pack
 The L1 data assocaited with this repository are available in an EDI package (in prep).
 
 ## Spatiotemporal extent: ##
-- Spatial extent: Kellogg Biological Station Long Term Ecological Research site (KBS-LTER), Hickory Corners, MI, USA. All data were collected in the early successional (T7) plots. 
+- Spatial extent: Kellogg Biological Station Long Term Ecological Research site (KBS-LTER), Hickory Corners, MI, USA. All data were collected in the early successional (T7) field replicates. This data occurs within the Rain Exclusion eXperiment (REX) plots (referred to as footprints in the scripts).
 - Temporal extent: end of growing season (September - October) 2021 & 2022
 
 ## Usage: ##
@@ -29,6 +29,7 @@ All analyses were conducted using R (R Core Team 2024)
 ### File naming convention: ###
 - Data files: File names typically contain KBS-LTER treatment code (T7), project within the greater Rain Exclusion eXperiment or REX (warmx), plant identifier (soca - Solidago canadensis), response variable, and data stage identifier. Some may include the greater project identifier "REX".
 - Scripts: Scripts are seperated into two folders: L1 and L2. L1 scripts use raw data and clean it, resulting in the cleaned L1 data in the EDI package. The L2 scripts take the cleaned data and analyze/plot it. The scripts are named with respect to their response variable, and contain code for both statistical analysis and figure making.
+- Column headers: Data files typically contain the following identifier columns: treatment (KBS LTER treatment code), rep (field replicate number), plot identifier (called "footprint"), subplot identifier (A-D), climate treatment (ambient, ambient drought, warm, warm drought), stem galling status (galled/non-galled), year (2021/2022), and unique plant ID. If a file is missing any identifier information, the unique plant ID and year can be used to merge identifier information.
 
 ## Scripts: ##
 ### L1 ###
