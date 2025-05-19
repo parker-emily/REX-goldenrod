@@ -39,9 +39,9 @@ seed <- seed %>%
 # Merge seed and biomass dataframes
 seed <- left_join(seed,biomass,by=c("Treatment","Rep","Footprint","Subplot","Climate_Treatment","Galling_Status","Year","Unique_ID"))
 # Removing rep 4
-seed <- seed %>%
-  filter(!(Rep == 4 & Climate_Treatment == "Warm Drought")) %>%
-  filter(!(Rep == 4 & Climate_Treatment == "Ambient Drought"))
+#seed <- seed %>%
+#  filter(!(Rep == 4 & Climate_Treatment == "Warm Drought")) %>%
+#  filter(!(Rep == 4 & Climate_Treatment == "Ambient Drought"))
 # Removing irrigated control
 seed <- seed %>%
   filter(!(Climate_Treatment == "Irrigated Control"))
@@ -82,8 +82,8 @@ plot(fit.gamma)
 
 
 ##### Full model #####
-seed <- within(seed, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Ambient Drought"))
-seed <- within(seed, Galling_Status <- relevel(factor(Galling_Status), ref = "Non-Galled"))
+seed <- within(seed, Climate_Treatment <- relevel(factor(Climate_Treatment), ref = "Ambient"))
+seed <- within(seed, Galling_Status <- relevel(factor(Galling_Status), ref = "Galled"))
 full.model <- glmmTMB(Seeds_Mass ~ Climate_Treatment * Galling_Status + (1|Year:Rep:Footprint) + (1|Biomass),
                       data=seed,
                       family=ziGamma(link="log"),
