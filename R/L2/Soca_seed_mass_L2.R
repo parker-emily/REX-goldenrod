@@ -44,7 +44,9 @@ seed <- left_join(seed,biomass,by=c("Treatment","Rep","Footprint","Subplot","Cli
 #  filter(!(Rep == 4 & Climate_Treatment == "Ambient Drought"))
 # Removing irrigated control
 seed <- seed %>%
-  filter(!(Climate_Treatment == "Irrigated Control"))
+  filter(!(Climate_Treatment == "Irrigated Control")) %>%
+  filter(!(Unique_ID == "217" & Year == "2022" | Unique_ID == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
+
 
 
 ##################################### Distribution check #####################################
