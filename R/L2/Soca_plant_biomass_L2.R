@@ -109,25 +109,41 @@ biomass <- within(biomass, Climate_Treatment <- relevel(factor(Climate_Treatment
 m1 <- lmer(sqrt(Biomass) ~ Climate_Treatment * Galling_Status + (1|Rep/Footprint/Subplot) + (1|Year), data = biomass, REML=F)
 summary(m1)
 
-# Pairwise comparisons for climate treatments
-# back-transforming - A vs. W
-(2.02745)^2-((2.02745-0.42824)^2) # 1.553081 - warmed plants weighed ~1.55 g more than ambient
-# back-transforming - A vs. WD
-(2.02745)^2-((2.02745-0.53052)^2) # 1.869754 - warmed + drought plants weighed ~1.87 g more than ambient
-
-# Pairwise comparisons for non-galled vs galled
-# back-transforming - galled vs. non-galled
-(2.02745)^2-((2.02745-(-0.02399))^2) # -0.09785257 - non-galled plants weighed 0.10 g less than galled plants
-
-# contrasts for interaction - treatment * galling status
-contrast3 <- contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "each", combine = F, adjust = "mvt")
-contrast3
-result3 = as.data.frame(contrast3)
-result3 <- result3 %>% mutate_if(is.numeric, round, digits=2)
-kable(result3) %>% kableExtra::kable_styling() # table
-
 # make model table for supp
 kable(anova(m1), digits = 3) %>% kableExtra::kable_styling()
+
+######## calculating effect sizes ########
+# Helper function to calculate percent increase
+percent_increase <- function(mean1, mean2) {
+        ((mean1 - mean2) / mean2) * 100
+}
+
+# Reshape data to make comparisons easier
+emm_wide <- emm_df %>%
+        select(Climate_Treatment, Galling_Status, response) %>%
+        tidyr::pivot_wider(names_from = Galling_Status, values_from = response)
+
+# Calculate percent increase in biomass for galled vs non-galled within each treatment
+emm_wide <- emm_wide %>%
+        mutate(Galled_vs_NonGalled = percent_increase(Galled, `Non-Galled`))
+
+# For comparisons across climate treatments within galled plants
+emm_galled <- emm_df %>% filter(Galling_Status == "Galled") %>%
+        select(Climate_Treatment, response) %>%
+        tidyr::pivot_wider(names_from = Climate_Treatment, values_from = response)
+
+# Add percent increases across treatments for galled plants
+emm_galled <- emm_galled %>%
+        mutate(
+                Warm_vs_Ambient = percent_increase(Warm, Ambient),
+                WarmDrought_vs_Ambient = percent_increase(`Warm Drought`, Ambient),
+                Warm_vs_Drought = percent_increase(Warm, `Ambient Drought`),
+                WarmDrought_vs_Drought = percent_increase(`Warm Drought`, `Ambient Drought`)
+        )
+
+# View results
+print(emm_wide)
+print(emm_galled)
 
 ######## Biomass plotting ########
 # Extract back-transformed EMMs
