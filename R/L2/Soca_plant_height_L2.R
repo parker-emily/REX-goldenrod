@@ -102,8 +102,7 @@ contrast(emmeans(m1, ~Climate_Treatment*Galling_Status), "pairwise", simple = "e
 emm <- emmeans(m1, ~ Climate_Treatment*Galling_Status, type = "response")
 emm_df <- as.data.frame(emm)
 
-png("plant_height.png", units="in", width=6, height=4, res=300)
-ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, fill = Galling_Status)) +
+plant_height_plot <- ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, fill = Galling_Status)) +
   geom_point(size=1, position=position_jitterdodge(), alpha=0.4) +
   geom_errorbar(data = emm_df, 
                 aes(x = Climate_Treatment, y = response, ymin = response-SE, ymax = response+SE), 
@@ -118,12 +117,16 @@ ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, f
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
+        annotate("text", x = 0.6, y=149, label = "B", size=5) +
   theme_bw() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"),
         legend.title = element_text(size=11,face="bold"),
         legend.text = element_text(size=11))
+
+png("plant_height.png", units="in", width=6, height=4, res=300)
+plant_height_plot
 dev.off()
 
 

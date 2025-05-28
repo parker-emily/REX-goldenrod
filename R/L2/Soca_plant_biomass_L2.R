@@ -19,6 +19,7 @@ library(emmeans)
 library(bbmle)
 library(multcomp)
 library(knitr)
+library(ggpubr)
 
 # Set working directory from .Renviron
 dir <- Sys.getenv("DATA_DIR")
@@ -112,6 +113,10 @@ summary(m1)
 # make model table for supp
 kable(anova(m1), digits = 3) %>% kableExtra::kable_styling()
 
+# Extract back-transformed EMMs
+emm <- emmeans(m1, ~ Climate_Treatment*Galling_Status, type = "response")
+emm_df <- as.data.frame(emm)
+
 ######## calculating effect sizes ########
 # Helper function to calculate percent increase
 percent_increase <- function(mean1, mean2) {
@@ -146,12 +151,7 @@ print(emm_wide)
 print(emm_galled)
 
 ######## Biomass plotting ########
-# Extract back-transformed EMMs
-emm <- emmeans(m1, ~ Climate_Treatment*Galling_Status, type = "response")
-emm_df <- as.data.frame(emm)
-
-png("plant_biomass.png", units="in", width=6, height=4, res=300)
-ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, color = Galling_Status, fill = Galling_Status)) +
+plant_biomass_plot <- ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, color = Galling_Status, fill = Galling_Status)) +
         geom_point(size=1, position=position_jitterdodge(), alpha=0.4) +
         geom_errorbar(data = emm_df, 
                       aes(x = Climate_Treatment, y = response, ymin = response-SE, ymax = response+SE), 
@@ -166,12 +166,15 @@ ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, color = Galling_Status, fi
                          labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                                   "Ambient Drought" = "Drought",
                                   "Warm Drought" = "Warmed &\nDrought")) +
+        annotate("text", x = 0.6, y = 15.4, label = "A", size = 5) +
         theme_bw() +
         theme(axis.text.x = element_text(size = 11),
               axis.text.y = element_text(size = 14),
               axis.title = element_text(size=14,face="bold"),
-              legend.title = element_text(size=11,face="bold"),
-              legend.text = element_text(size=11))
+              legend.position = "none")
+
+png("plant_biomass.png", units="in", width=6, height=4, res=300)
+plant_biomass_plot
 dev.off()
 
 
@@ -206,3 +209,14 @@ ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, color = Galling_Status, fi
               legend.title = element_text(size=11,face="bold"),
               legend.text = element_text(size=11))
 dev.off()
+
+
+######## combine plant biomass and plant height plots together  ########
+# note, you have to have ran both scripts (biomass and height) so that the two plots are in your global environment
+png("plant_biomass_height.png", units="in", width=11, height=5, res=300)
+ggarrange(plant_biomass_plot, plant_height_plot,
+          ncol = 2, common.legend = T, legend="right", widths = c(1, 1))
+dev.off()
+ 
+
+
