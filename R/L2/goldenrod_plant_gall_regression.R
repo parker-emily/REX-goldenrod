@@ -15,14 +15,6 @@ biomass <- read.csv(file.path(dir, "/T7_warmx_plant_traits/L1/T7_warmx_soca_biom
 chmb_vol <- read.csv(file.path(dir, "/T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_vol_L1.csv"))
 chmb_count <- read.csv(file.path(dir, "/T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
 
-# Emily's
-dir <- setwd("C:/Users/parkere5/Documents/Goldenrod Data")
-height <- read.csv("T7_warmx_soca_height_harvest_L1.csv")
-gall <- read.csv("T7_warmx_Soca_galls_L1.csv")
-biomass <- read.csv("T7_warmx_soca_biomass_L1.csv")
-chmb_vol <- read.csv("T7_warmx_Soca_gall_chmb_vol_L1.csv")
-chmb_count <- read.csv("T7_warmx_Soca_gall_chmb_count_L1.csv")
-
 #rename chamber columns
 chmb_vol <- chmb_vol %>% 
   rename("Unique_ID" = "unique_plant_number",
