@@ -38,11 +38,8 @@ seed <- seed %>%
 
 # Merge seed and biomass dataframes
 seed <- left_join(seed,biomass,by=c("Treatment","Rep","Footprint","Subplot","Climate_Treatment","Galling_Status","Year","Unique_ID"))
-# Removing rep 4
-#seed <- seed %>%
-#  filter(!(Rep == 4 & Climate_Treatment == "Warm Drought")) %>%
-#  filter(!(Rep == 4 & Climate_Treatment == "Ambient Drought"))
-# Removing irrigated control
+
+# Removing irrigated control & plants with incorrect galling status
 seed <- seed %>%
   filter(!(Climate_Treatment == "Irrigated Control")) %>%
   filter(!(Unique_ID == "217" & Year == "2022" | Unique_ID == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
