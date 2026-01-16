@@ -2,7 +2,11 @@
 ## Introduction ##
 R scripts from the Kellogg Biological Station Long Term Ecological Research site Rain Exclusion eXperiment (KBS-LTER REX).
 
-These scripts are used to organize, clean, analyze, and plot data from the individual goldenrod stems collected in 2021 & 2022.
+These scripts are used to organize, clean, analyze, and plot data from the individual goldenrod stems collected in 2021 & 2022. The code in this repository was used to conduct the statistical analyses and create the plots for a manuscript to be published in Oecologia.
+
+The accompanying data for these scripts will be openly available in the Environmental Data Initiative data repository.
+
+Parker, E.G.,  M. Hammond, M. Young, K. Dobson, P.L. Zarnetske (in revision). Climate warming and drought modify galling effects on tall goldenrod. Oecologia.
 
 ### Response variables include: ###
 - stem biomass
