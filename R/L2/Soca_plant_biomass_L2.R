@@ -167,7 +167,7 @@ plant_biomass_plot <- ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, colo
                                   "Ambient Drought" = "Drought",
                                   "Warm Drought" = "Warmed &\nDrought")) +
         annotate("text", x = 0.6, y = 15.4, label = "A", size = 5) +
-        theme_bw() +
+        theme_classic() +
         theme(axis.text.x = element_text(size = 11),
               axis.text.y = element_text(size = 14),
               axis.title = element_text(size=14,face="bold"),
@@ -202,7 +202,7 @@ ggplot(biomass, aes(x=Climate_Treatment, y = Biomass, color = Galling_Status, fi
                          labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                                   "Ambient Drought" = "Drought",
                                   "Warm Drought" = "Warmed &\nDrought")) +
-        theme_bw() +
+        theme_classic() +
         theme(axis.text.x = element_text(size = 11),
               axis.text.y = element_text(size = 14),
               axis.title = element_text(size=14,face="bold"),
