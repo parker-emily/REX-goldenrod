@@ -28,7 +28,7 @@ dir<-setwd("DATA_DIR")
 weight <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_galls_weight_L1.csv"))
 weight <- weight %>%
   filter(!(Climate_Treatment == "Irrigated Control")) %>%
-  filter(!(unique_plant_number == "217" & Year == "2022" | unique_plant_number == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
+  filter(!(Unique_ID == "217" & Year == "2022" | Unique_ID == "232" & Year == "2022" | Unique_ID == "285" & Year == "2021"))
   
 
 count <- read.csv(file.path(dir, "T7_warmx_insect/L1/T7_warmx_Soca_gall_chmb_count_L1.csv"))
