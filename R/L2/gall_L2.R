@@ -109,7 +109,7 @@ weight_plot <- ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=1.5, label = "A", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
                axis.text.y = element_text(size = 14),
                axis.title = element_text(size=14,face="bold"))
@@ -188,7 +188,7 @@ count_plot <- ggplot(count, aes(x=treatment, y = num_of_chambers)) +
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=6, label = "B", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
@@ -261,7 +261,7 @@ vol_plot <- ggplot(vol, aes(x=treatment, y = chamber_volume_mm3)) +
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=20, label = "C", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
@@ -297,7 +297,7 @@ ggplot(weight, aes(x=Climate_Treatment, y = Dried_Weight)) +
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"))
