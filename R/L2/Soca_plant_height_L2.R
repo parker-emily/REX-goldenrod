@@ -118,7 +118,7 @@ plant_height_plot <- ggplot(height, aes(x=Climate_Treatment, y = Height_cm, colo
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
         annotate("text", x = 0.6, y=149, label = "B", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"),
@@ -155,7 +155,7 @@ ggplot(height, aes(x=Climate_Treatment, y = Height_cm, color = Galling_Status, f
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 11),
         axis.text.y = element_text(size = 14),
         axis.title = element_text(size=14,face="bold"),
