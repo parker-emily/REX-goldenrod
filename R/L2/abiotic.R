@@ -149,7 +149,7 @@ air_temp <- ggplot(data = hobo_temp_rep_avg, aes(x = factor(Subplot_Descriptions
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=23.7, label = "A", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.title = element_text(size=17, face="bold"),
         axis.text = element_text(size=15),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -165,7 +165,7 @@ soil_temp <- ggplot(soil_sampling_avg_rep, aes(x = factor(Subplot_Descriptions, 
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=18.9, label = "B", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.title = element_text(size=17, face="bold"),
         axis.text = element_text(size=15),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -181,7 +181,7 @@ soil_moist <- ggplot(soil_sampling_avg_rep, aes(x = factor(Subplot_Descriptions,
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=0.25, label = "C", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.title = element_text(size=17, face="bold"),
         axis.text = element_text(size=15),
         axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
@@ -268,7 +268,7 @@ air_temp_yearly <- ggplot(hobo_temp_avg_year, aes(x = factor(Subplot_Description
   scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   #annotate("text", x = 0.6, y=23, label = "A", size=6) +
   scale_fill_manual(name="Year",
                     values = c("#FFB451", "#0b0055")) +
@@ -285,7 +285,7 @@ soil_temp_yearly <- ggplot(soil_sampling_avg_year, aes(x = factor(Subplot_Descri
   scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   # annotate("text", x = 0.7, y=21.3, label = "B", size=6) +
   scale_fill_manual(name="Year",
                     values = c("#FFB451", "#0b0055")) +
@@ -302,7 +302,7 @@ soil_moist_yearly <- ggplot(soil_sampling_avg_year, aes(x = factor(Subplot_Descr
   scale_x_discrete(labels=c("ambient" = "Ambient", "drought" = "Drought",
                             "warmed" = "Warmed",
                             "warmed_drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   #annotate("text", x = 0.7, y=0.28, label = "C", size=6) +
   scale_fill_manual(name="Year",
                     values = c("#FFB451", "#0b0055")) +
@@ -336,7 +336,7 @@ ggplot(dr_check_2021, aes(x = month_day, y = average_moist, group=Rep, color=Rep
   geom_point(size = 2) +
   labs(y="VWC", x="Date", title="2021") +
   scale_x_discrete(breaks=everyother) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.title = element_text(size=20),
         axis.text = element_text(size=18),
         title=element_text(size=20),
@@ -358,7 +358,7 @@ ggplot(dr_check_2022, aes(x = month_day, y = average_moist, group=Rep, color=Rep
   geom_point(size = 2) +
   labs(y="VWC", x="Date", title="2022") +
   scale_x_discrete(breaks=everyother) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.title = element_text(size=20),
         axis.text = element_text(size=18),
         title = element_text(size=20),
