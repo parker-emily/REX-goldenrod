@@ -156,7 +156,7 @@ weight_plot <- ggplot(seed, aes(x=Climate_Treatment, y = Seeds_Mass, color = Gal
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=3.5, label = "B", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 16),
         axis.title = element_text(size=16,face="bold"),
@@ -183,7 +183,7 @@ prob_plot <- ggplot(mass_binom_seed, aes(x=Climate_Treatment, y = mean_n, color 
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
   annotate("text", x = 0.6, y=1, label = "A", size=5) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 16),
         axis.title = element_text(size=16,face="bold"),
@@ -250,7 +250,7 @@ weight_year_plot <- ggplot(seed, aes(x=Climate_Treatment, y = Seeds_Mass, color 
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 16),
         axis.title = element_text(size=16,face="bold"),
@@ -274,7 +274,7 @@ prob_year_plot <- ggplot(mass_binom_seed2, aes(x=Climate_Treatment, y = mean_n, 
                    labels=c("Ambient" = "Ambient", "Warm" = "Warmed",
                             "Ambient Drought" = "Drought",
                             "Warm Drought" = "Warmed &\nDrought")) +
-  theme_bw() +
+  theme_classic() +
   theme(axis.text.x = element_text(size = 12),
         axis.text.y = element_text(size = 16),
         axis.title = element_text(size=16,face="bold"),
