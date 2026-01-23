@@ -1,4 +1,5 @@
 # REX-goldenrod
+[![DOI](https://zenodo.org/badge/905942428.svg)](https://doi.org/10.5281/zenodo.18356227)
 ## Introduction ##
 R scripts from the Kellogg Biological Station Long Term Ecological Research site Rain Exclusion eXperiment (KBS-LTER REX).
 
